@@ -5,7 +5,8 @@ import scala.util.Try
 
 object InputGetter {
 
-  private val session = Try(sys.env("SESSIONID")).getOrElse(os.read.lines(os.pwd / ".env").head.split("=").last)
+  private val sessionFromEnvFile: String = os.read.lines(os.pwd / ".env").head.split("=").last
+  private val session = Try(sys.env("SESSIONID")).getOrElse(sessionFromEnvFile)
 
   @tailrec
   def get(day: Int): Seq[String] = {
@@ -14,7 +15,7 @@ object InputGetter {
       os.read.lines(target)
     else {
       println("Downloading day " + day)
-      os.write(target, requests.get.stream(s"https://adventofcode.com/2021/day/1/input", check = true, cookieValues = Map("session" -> session)))
+      os.write(target, requests.get.stream(s"https://adventofcode.com/2021/day/$day/input", check = true, headers = Map("Cookie" -> s"session=$session")))
 
       get(day)
     }
