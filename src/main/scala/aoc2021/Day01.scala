@@ -13,7 +13,9 @@ case object Day01 extends AocTools(day = 1) {
     }
     ._1
 
-  def step2: Int = step1(inputInts.sliding(3).map(_.sum).toSeq)
+  def step2(measurements: Seq[Int]): Int = step1(measurements.sliding(3).map(_.sum).toSeq)
+
+  def step2: Int = step2(inputInts)
 
   def main(args: Array[String]): Unit = {
     println("Step 1: " + step1)
