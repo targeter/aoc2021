@@ -4,23 +4,28 @@ import shared._
 
 case object Day02 extends AocTools(day = 2) {
 
-  case class Position(h: Int = 0, d: Int = 0) {
-    def go(in: Instruction): Position = in match {
-      case Instruction("forward", c) => copy(h = h + c)
-      case Instruction("down", c)    => copy(d = d + c)
-      case Instruction("up", c)      => copy(d = d - c)
+  trait Processor {
+    def apply(instructions: Seq[Instruction]): Position
+  }
+
+  object SimpleProcessor extends Processor {
+    override def apply(instructions: Seq[Instruction]): Position = instructions.foldLeft(Position(0, 0, 0)) {
+      case (Position(h, d, a), Instruction("forward", count)) => Position(h + count, d, a)
+      case (Position(h, d, a), Instruction("down", count))    => Position(h, d + count, a)
+      case (Position(h, d, a), Instruction("up", count))      => Position(h, d - count, a)
     }
   }
-  case class Position2(h: Int = 0, d: Int = 0, aim: Int = 0) {
-    def go(in: Instruction): Position2 = in match {
-      case Instruction("forward", c) => copy(h = h + c, d = d + (aim * c))
-      case Instruction("down", c)    => copy(aim = aim + c)
-      case Instruction("up", c)      => copy(aim = aim - c)
+  object AimProcessor extends Processor {
+    override def apply(instructions: Seq[Instruction]): Position = instructions.foldLeft(Position(0, 0, 0)) {
+      case (Position(h, d, a), Instruction("forward", count)) => Position(h + count, d + (a * count), a)
+      case (Position(h, d, a), Instruction("down", count))    => Position(h, d, a + count)
+      case (Position(h, d, a), Instruction("up", count))      => Position(h, d, a - count)
     }
   }
 
-  case class Instruction(direction: String, count: Int) {}
+  case class Position(height: Int = 0, depth: Int = 0, aim: Int = 0)
 
+  case class Instruction(direction: String, count: Int)
   object Instruction {
     def apply(string: String): Instruction = {
       val parts = string.split(" ").toList
@@ -31,23 +36,19 @@ case object Day02 extends AocTools(day = 2) {
 
   def parse(input: Seq[String]): Seq[Instruction] = input.map(Instruction(_))
 
-  def process(input: Seq[Instruction]): Position = input.foldLeft(Position())((pos, i) => pos.go(i))
-  def process2(input: Seq[Instruction]): Position2 = input.foldLeft(Position2())((pos, i) => pos.go(i))
+  def process(input: Seq[Instruction], processor: Processor): Int = {
+    val Position(h, d, _) = processor(input)
+    h * d
+  }
 
   def step1: Int = step1(inputLines)
-  def step1(input: Seq[String]): Int = {
-    val Position(h, d) = process(parse(input))
-    h * d
-  }
+  def step1(input: Seq[String]): Int = process(parse(input), SimpleProcessor)
 
   def step2: Int = step2(inputLines)
-  def step2(input: Seq[String]): Int = {
-    val Position2(h, d, _) = process2(parse(input))
-    h * d
-  }
+  def step2(input: Seq[String]): Int = process(parse(input), AimProcessor)
 
   def main(args: Array[String]): Unit = {
-    println("Step 1: " + step1)
-    println("Step 2: " + step2)
+    println("Step 1: " + step1) // 1714950
+    println("Step 2: " + step2) // 1281977850
   }
 }

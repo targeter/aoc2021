@@ -17,12 +17,12 @@ class Day02Test extends AnyFunSuite with Matchers with OptionValues {
   )
 
   test("step1") {
-    process(parse(exampleList)) must be(Position(15, 10))
+    SimpleProcessor(parse(exampleList)) must be(Position(15, 10))
     step1(exampleList) must be(150)
   }
 
   test("step2") {
-    val Position2(h, d, _) = process2(parse(exampleList))
+    val Position(h, d, _) = AimProcessor(parse(exampleList))
     h must be(15)
     d must be(60)
 
