@@ -20,5 +20,7 @@ package object ops {
   implicit class StringOps[T](input: String) {
     def splitLines = input.split("\n").toList
     def asInts: List[Int] = splitLines.map(_.toInt)
+
+    def parseInts = input.trim.split("\\s+").map(_.toInt).toList
   }
 }
