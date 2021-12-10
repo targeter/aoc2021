@@ -22,12 +22,12 @@ class Day10Test extends AnyFunSuite with Matchers with OptionValues {
   )
 
   test("step1") {
-    exampleList.map(findScore).count(_._1.isEmpty) must be(5)
+    exampleList.map(findScore).count(_.isLeft) must be(5)
     step1(exampleList) must be(26397)
   }
 
   test("step2") {
-    exampleList.map(findScore).count(_._2 == 0) must be(5)
+    exampleList.map(findScore).count(_.isRight) must be(5)
     step2(exampleList) must be(288957)
   }
 
