@@ -15,7 +15,11 @@ object InputGetter {
       os.read.lines(target)
     else {
       println("Downloading day " + day)
-      os.write(target, requests.get.stream(s"https://adventofcode.com/2021/day/$day/input", check = true, headers = Map("Cookie" -> s"session=$session")))
+      try {
+        os.write(target, requests.get.stream(s"https://adventofcode.com/2021/day/$day/input", check = true, headers = Map("Cookie" -> s"session=$session")))
+      } finally {
+        if (os.size(target) == 0) os.remove(target)
+      }
 
       get(day)
     }
