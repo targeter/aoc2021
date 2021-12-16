@@ -22,5 +22,8 @@ package object ops {
     def asInts: List[Int] = splitLines.map(_.toInt)
 
     def parseInts = input.trim.split("\\s+").map(_.toInt).toList
+
+    def toBinInt = Integer.parseInt(input, 2)
+    def toBinLong = BigInt.apply(input, 2).longValue
   }
 }
